@@ -18,6 +18,21 @@
         <relativePath/>
     </parent>
 
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <profileActive>dev</profileActive>
+            </properties>
+        </profile>
+        <profile>
+            <id>test</id>
+            <properties>
+                <profileActive>test</profileActive>
+            </properties>
+        </profile>
+    </profiles>
+
     <repositories>
         <repository>
             <id>public</id>

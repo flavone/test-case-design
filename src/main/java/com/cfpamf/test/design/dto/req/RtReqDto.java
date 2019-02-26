@@ -1,7 +1,7 @@
 package com.cfpamf.test.design.dto.req;
 
-import com.cfpamf.test.design.vo.RtEdgeItem;
-import com.cfpamf.test.design.vo.RtNodeItem;
+import com.cfpamf.test.design.vo.rt.RtEdgeItem;
+import com.cfpamf.test.design.vo.rt.RtNodeItem;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

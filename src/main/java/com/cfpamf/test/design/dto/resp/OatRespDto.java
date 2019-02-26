@@ -1,6 +1,6 @@
 package com.cfpamf.test.design.dto.resp;
 
-import com.cfpamf.test.design.vo.OatCaseItem;
+import com.cfpamf.test.design.vo.oat.OatCaseItem;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
