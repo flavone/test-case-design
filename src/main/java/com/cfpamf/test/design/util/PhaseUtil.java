@@ -1,8 +1,14 @@
 package com.cfpamf.test.design.util;
 
+import com.cfpamf.test.design.dto.req.NewRtReqDto;
+import com.cfpamf.test.design.dto.req.RtReqDto;
+import com.cfpamf.test.design.vo.rt.RtEdgeItem;
+import com.cfpamf.test.design.vo.rt.RtNodeItem;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -69,6 +75,44 @@ public class PhaseUtil {
             }
         }
         return originalString;
+    }
+
+    public static RtReqDto dto2Dto(NewRtReqDto reqDto) {
+        RtReqDto dto = new RtReqDto();
+        List<RtNodeItem> nodes = new ArrayList<>();
+        List<RtEdgeItem> edges = new ArrayList<>();
+        for (String s : reqDto.getInputs()) {
+            s = s.trim();
+            s = replaceInvalidSymbol(s);
+            String[] strList = s.split(":");
+            RtNodeItem node = new RtNodeItem();
+            node.setLabel(strList[0]);
+            node.setWeight(0);
+            if (nodes.size() == 0) {
+                nodes.add(node);
+            } else if (nodes.stream().noneMatch(k -> Objects.equals(k.getLabel(), node.getLabel()))) {
+                nodes.add(node);
+            }
+            String[] nextNodeLabels = strList[1].split(",");
+            for (String nextNode : nextNodeLabels) {
+                RtEdgeItem edge = new RtEdgeItem();
+                edge.setFrom(strList[0]);
+                edge.setTo(nextNode);
+                edge.setWeight(0);
+                if (edges.size() == 0) {
+                    edges.add(edge);
+                } else if (edges.stream().noneMatch(k -> Objects.equals(k.getFrom(), edge.getFrom()) && Objects.equals(k.getTo(), edge.getTo()))) {
+                    edges.add(edge);
+                }
+            }
+        }
+        dto.setNodes(nodes);
+        dto.setEdges(edges);
+        dto.setMode(reqDto.getMode());
+        dto.setStartNodeLabel(reqDto.getStartNodeLabel());
+        dto.setStopNodeLabel(reqDto.getStopNodeLabel());
+        dto.setWeightPercent(reqDto.getWeightPercent());
+        return dto;
     }
 
 

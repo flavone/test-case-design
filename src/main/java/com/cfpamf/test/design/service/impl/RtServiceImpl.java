@@ -50,7 +50,8 @@ public class RtServiceImpl implements IGetCaseService<RtReqDto, RtRespDto> {
                 this.result.add(new ArrayList<>(path));
             }
             //找到结果后回滚到最近的分叉路口
-            rollbackToIndex(path);
+            //rollbackToIndex(path);
+            rollback(path);
             return;
         }
         //当前节点没有边则移除
@@ -66,11 +67,11 @@ public class RtServiceImpl implements IGetCaseService<RtReqDto, RtRespDto> {
         for (GraphEdge edge : currentNode.getEdgeList()) {
             //当出现分叉路径时，记录回滚路径
             if (currentNode.getEdgeList().size() > 1) {
-                rollback = path.size();
+                rollback = path.lastIndexOf(currentNode) + 1;
             }
             GraphNode nextNode = nodes.stream().filter(graphNode -> Objects.equals(graphNode.getLabel(), edge.getNodeRight())).findFirst().get();
             // 解决自循环问题,第一次自循环则允许
-            if (nodeCycle) {
+            if (nodeCycle && Objects.equals(currentNode.getLabel(), nextNode.getLabel())) {
                 nodeCycle = false;
                 continue;
             }
@@ -85,10 +86,12 @@ public class RtServiceImpl implements IGetCaseService<RtReqDto, RtRespDto> {
             }
             depthFirstSearch(nodes, nextNode, endNode, path);
         }
+        rollback(path);
     }
 
     /**
      * 检查当前路径是否已在结果中
+     *
      * @param path 路径
      * @return 在则返回true
      */
@@ -103,6 +106,7 @@ public class RtServiceImpl implements IGetCaseService<RtReqDto, RtRespDto> {
 
     /**
      * 回滚路径到添加最后一个节点前的状态
+     *
      * @param path 路径
      */
     private void rollback(List<GraphNode> path) {
@@ -111,6 +115,7 @@ public class RtServiceImpl implements IGetCaseService<RtReqDto, RtRespDto> {
 
     /**
      * 回滚路径到分叉路径出现时的状态
+     *
      * @param path 路径
      */
     private void rollbackToIndex(List<GraphNode> path) {
