@@ -14,6 +14,11 @@ import java.util.regex.Pattern;
  */
 public class PhaseUtil {
     /**
+     * 符号替换
+     */
+    private static final String[] INVALID_SYMBOLS = {"，", "。", "（", "）"};
+
+    /**
      * 将字符串中${xxx}替换成对应的字符串
      *
      * @param originalString
@@ -40,6 +45,32 @@ public class PhaseUtil {
     public static List<String> getKeys(String originalString) {
         return getInstance().getKeyList(originalString);
     }
+
+    public static String replaceInvalidSymbol(String originalString) {
+        if (null == originalString || originalString.length() == 0) {
+            return "";
+        }
+        for (String s : INVALID_SYMBOLS) {
+            switch (s) {
+                case "，":
+                    originalString = originalString.replaceAll(s, ",");
+                    break;
+                case "。":
+                    originalString = originalString.replaceAll(s, ".");
+                    break;
+                case "（":
+                    originalString = originalString.replaceAll(s, "(");
+                    break;
+                case "）":
+                    originalString = originalString.replaceAll(s, ")");
+                    break;
+                default:
+                    break;
+            }
+        }
+        return originalString;
+    }
+
 
     private static PhaseUtil getInstance() {
         return new PhaseUtil();

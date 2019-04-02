@@ -36,6 +36,11 @@ public class CalculatorUtil {
     public static BigDecimal conversion(String expression) {
         BigDecimal result;
         CalculatorUtil cal = new CalculatorUtil();
+        if (null == expression) {
+            return BigDecimal.ZERO;
+        }
+        expression = PhaseUtil.replaceInvalidSymbol(expression);
+        expression = expression.replaceAll(",", "");
         expression = transform(expression);
         result = cal.calculate(expression);
         return result;
