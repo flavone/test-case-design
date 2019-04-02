@@ -50,9 +50,13 @@ public class DesignController {
     @PostMapping(value = "/getRTCaseString")
     public NewRtRespDto getRTCaseString(@RequestBody NewRtReqDto input) {
         NewRtRespDto respDto = new NewRtRespDto();
-        RtReqDto data = PhaseUtil.dto2Dto(input);
         try {
+            RtReqDto data = PhaseUtil.dto2Dto(input);
             RtRespDto dto = rtService.getTestCase(data);
+            if (!dto.isStatus()) {
+                respDto.setErrMsg(dto.getErrMsg());
+                return respDto;
+            }
             List<String> stringList = new ArrayList<>();
             for (RtCaseItem item : dto.getResult()) {
                 List<String> str = new ArrayList<>();
