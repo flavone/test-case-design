@@ -35,7 +35,8 @@ public class RtServiceImpl implements IGetCaseService<RtReqDto, RtRespDto> {
     private int rollback;
 
     /**
-     * 深度优先遍历
+     * 深度优先遍历，因为只要遇到目标节点就会记录，所以最前面的路径并非最长的路径
+     * <p>这么说其实不算DFS (:笑</p>
      *
      * @param currentNode 当前节点
      * @param endNode     目标节点
@@ -51,6 +52,7 @@ public class RtServiceImpl implements IGetCaseService<RtReqDto, RtRespDto> {
             }
             //找到结果后回滚到最近的分叉路口
             //rollbackToIndex(path);
+            //应该是直接回滚上一节点，因为存在情况导致rollback值取未找到结果时的最大path
             rollback(path);
             return;
         }
@@ -66,11 +68,13 @@ public class RtServiceImpl implements IGetCaseService<RtReqDto, RtRespDto> {
          */
         for (GraphEdge edge : currentNode.getEdgeList()) {
             //当出现分叉路径时，记录回滚路径
+            //rollback现在没用了，因为无论如何，当前递归完成时都会往前回滚一次，这里先留着
             if (currentNode.getEdgeList().size() > 1) {
                 rollback = path.lastIndexOf(currentNode) + 1;
             }
             GraphNode nextNode = nodes.stream().filter(graphNode -> Objects.equals(graphNode.getLabel(), edge.getNodeRight())).findFirst().get();
             // 解决自循环问题,第一次自循环则允许
+            // why? 因为有部分业务逻辑会导致状态不变，但这种情况时因为前面的逻辑处理不一致导致的
             if (nodeCycle && Objects.equals(currentNode.getLabel(), nextNode.getLabel())) {
                 nodeCycle = false;
                 continue;
@@ -79,6 +83,7 @@ public class RtServiceImpl implements IGetCaseService<RtReqDto, RtRespDto> {
                 nodeCycle = true;
             }
             // 解决内循环问题,出现重复路径则不允许
+            // why? 因为重复路径意味着这个业务逻辑前面已经验证过了，没必要再进行验证
             checkEdgeCycle(path, currentNode.getLabel(), nextNode.getLabel());
             if (edgeCycle) {
                 edgeCycle = false;
@@ -86,6 +91,7 @@ public class RtServiceImpl implements IGetCaseService<RtReqDto, RtRespDto> {
             }
             depthFirstSearch(nodes, nextNode, endNode, path);
         }
+        //当前节点的后向节点全部取完时回滚到上一节点
         rollback(path);
     }
 
@@ -176,7 +182,7 @@ public class RtServiceImpl implements IGetCaseService<RtReqDto, RtRespDto> {
         if (mode == 0) {
             depthFirstSearch(graph.getNodes(), startNode, stopNode, path);
         } else {
-            //TODO
+            //TODO BFS是否需要？目前DFS模式也能实现全覆盖
         }
         return result;
     }
@@ -187,6 +193,7 @@ public class RtServiceImpl implements IGetCaseService<RtReqDto, RtRespDto> {
         try {
             //将对象解析成有向图
             DirectGraph g = DirectGraph.getInstanceFromJson(new JSONObject(inputData));
+            //获取起始节点和结束节点
             GraphNode start = g.getNodes().stream().filter(node -> Objects.equals(node.getLabel(), inputData.getStartNodeLabel())).findFirst().get();
             GraphNode stop = g.getNodes().stream().filter(node -> Objects.equals(node.getLabel(), inputData.getStopNodeLabel())).findFirst().get();
             List<List<GraphNode>> resultList = this.search(g, start, stop, inputData.getMode() != 0 ? 1 : 0);
@@ -204,7 +211,7 @@ public class RtServiceImpl implements IGetCaseService<RtReqDto, RtRespDto> {
                 simpleCase.setTestCase(nodeParameterList);
                 result.add(simpleCase);
             }
-            //TODO 解决权重计算
+            //TODO 解决权重计算，可以考虑将权重计算放到另一个工具类统一处理
             dto.setResult(result);
             dto.setCount(result.size());
             dto.setStatus(true);

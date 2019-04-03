@@ -18,6 +18,12 @@ import java.util.Map;
 @Service
 public class PictServiceImpl implements IGetCaseService<PictReqDto, PictRespDto> {
 
+    /**
+     * 使用PICT工具生成成对测试用例
+     *
+     * @param input
+     * @return
+     */
     private List<String> getTestSets(String input) {
         IInventory inventory = PairwiseInventoryFactory.generateParameterInventory(input);
         List<Map<String, String>> rawDataSet = inventory.getTestDataSet().getTestSets();
@@ -26,6 +32,12 @@ public class PictServiceImpl implements IGetCaseService<PictReqDto, PictRespDto>
         return resultList;
     }
 
+    /**
+     * 将入参列表转换为逗号分隔的字符串
+     *
+     * @param input
+     * @return
+     */
     private String listToString(List<String> input) {
         if (null == input || input.size() <= 1) {
             return null;

@@ -61,7 +61,7 @@ public class DesignController {
             for (RtCaseItem item : dto.getResult()) {
                 List<String> str = new ArrayList<>();
                 item.getTestCase().stream().forEach(k -> str.add(k.getLabel()));
-                stringList.add(String.join(",", str));
+                stringList.add(String.join("->", str));
             }
             respDto.setCount(stringList.size());
             respDto.setResults(stringList);

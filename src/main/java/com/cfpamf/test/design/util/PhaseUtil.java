@@ -52,6 +52,12 @@ public class PhaseUtil {
         return getInstance().getKeyList(originalString);
     }
 
+    /**
+     * 将通常会输入错误的半角符转换为全角符
+     *
+     * @param originalString
+     * @return
+     */
     public static String replaceInvalidSymbol(String originalString) {
         if (null == originalString || originalString.length() == 0) {
             return "";
@@ -77,6 +83,13 @@ public class PhaseUtil {
         return originalString;
     }
 
+    //TODO 放到这里不太合适，考虑移出去
+    /**
+     * 新旧DTO转换
+     *
+     * @param reqDto
+     * @return
+     */
     public static RtReqDto dto2Dto(NewRtReqDto reqDto) {
         RtReqDto dto = new RtReqDto();
         List<RtNodeItem> nodes = new ArrayList<>();
@@ -120,11 +133,26 @@ public class PhaseUtil {
         return new PhaseUtil();
     }
 
+    /**
+     * 匹配${(.*?)}中的内容并存储
+     *
+     * @param originalString
+     * @return
+     */
     private List<String> getKeyList(String originalString) {
+        // 只匹配 ${} 在字符串中保存为 \$\{\}, 不匹配包含转义符的 \${\} 在字符串中保存为 \\\$\{\\\}
+        // 即前段${ 使用 (?<=(?<!\\\\)\\$\\{), 后段使用 (?<=(?<!\\\\)\\}), 中间段使用非贪婪匹配(.*?)
         String reg = "(?<=(?<!\\\\)\\$\\{)(.*?)(?=(?<!\\\\)\\})";
         return find(reg, originalString);
     }
 
+    /**
+     * 通配取值
+     *
+     * @param reg
+     * @param str
+     * @return
+     */
     private List<String> find(String reg, String str) {
         Matcher matcher = Pattern.compile(reg).matcher(str);
         List<String> list = new ArrayList<>();
