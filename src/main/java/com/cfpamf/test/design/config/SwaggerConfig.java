@@ -12,7 +12,6 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
- *
  * @author flavone
  * @date 2018/09/07
  */
@@ -21,6 +20,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class SwaggerConfig {
     @Bean
     public Docket createRestApi() {
+        //仅扫描对应的包路径, 不使用默认的响应
         return new Docket(DocumentationType.SWAGGER_2).useDefaultResponseMessages(false)
                 .apiInfo(apiInfo()).select()
                 .apis(RequestHandlerSelectors.basePackage("com.cfpamf.test.design.controller"))
@@ -28,8 +28,8 @@ public class SwaggerConfig {
     }
 
     private ApiInfo apiInfo() {
-        Contact contact = new Contact("黄文", "", "");
+        Contact contact = new Contact("黄文", "", "flavone@sina.com");
         return new ApiInfoBuilder().title("Api Documentation").description(" 中和农信")
-                .termsOfServiceUrl("http://www.cfpamf.org.cn/").contact(contact).version("1.0").build();
+                .termsOfServiceUrl("http://www.cfpamf.org.cn/").contact(contact).version("1.0.1").build();
     }
 }
