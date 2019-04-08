@@ -21,8 +21,8 @@ public class CalculatorController {
     @ApiOperation(value = "获取计算结果", notes = "支持科学计数法如1.23E1, 1.25e-7, 支持会计分号',', 自动替换半角符号如，。（）")
     @PostMapping(value = "/doCalculate")
     public String doCalculate(
-            @RequestParam(value = "数学表达式") String data,
-            @RequestParam(value = "精确位数", required = false) Integer scale) {
+            @RequestParam(value = "expression") String data,
+            @RequestParam(value = "scale", required = false) Integer scale) {
         if (null == data) {
             return "数学表达式不能为空";
         }
