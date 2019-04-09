@@ -1,11 +1,13 @@
 FROM registry.cn-hangzhou.aliyuncs.com/shinyn/openjdk:8
 MAINTAINER zhangqin <shinyn@163.com>
+ARG ENV_MY_JAR
+ENV ENV_MY_JAR ${ENV_MY_JAR}
 ENV VERSION 0.10.0-SNAPSHOT
 RUN mkdir -p test_design/logs \
     && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && echo "Asia/Shanghai" > /etc/timezone 
 WORKDIR test_design
 ADD test_design.tgz /test_design
-RUN chmod 777 *.jar
+RUN chmod 777 ${ENV_MY_JAR}
 EXPOSE 8585
-CMD java -jar -Xms1024M -Xmx2048M -Xmn880m -Xss1m -XX:MetaspaceSize=256m -XX:MaxMetaspaceSize=256m ./test-design-0.0.1-SNAPSHOT.jar --spring.profiles.active=test
+CMD java -jar -Xms1024M -Xmx2048M -Xmn880m -Xss1m -XX:MetaspaceSize=256m -XX:MaxMetaspaceSize=256m ./${ENV_MY_JAR} --spring.profiles.active=test
