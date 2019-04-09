@@ -7,7 +7,7 @@ RUN mkdir -p test_design/logs \
     && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && echo "Asia/Shanghai" > /etc/timezone 
 WORKDIR test_design
-ADD test_design.tgz /test_design
+ADD test_case_design.tgz /test_design
 RUN chmod 777 ${ENV_MY_JAR}
 EXPOSE 8585
 CMD java -jar -Xms1024M -Xmx2048M -Xmn880m -Xss1m -XX:MetaspaceSize=256m -XX:MaxMetaspaceSize=256m ./${ENV_MY_JAR} --spring.profiles.active=test
