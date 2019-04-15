@@ -1,6 +1,7 @@
 package com.cfpamf.test.design.util;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Stack;
 
@@ -215,6 +216,30 @@ public class CalculatorUtil {
             default:
                 break;
         }
+        return result;
+    }
+
+    public static int[] getRandom(Integer count, Integer start, Integer end) {
+        if (count > (end - start + 1) || end < start) {
+            return null;
+        }
+        int[] result = new int[count];
+        int c = 0;
+        while (c < count) {
+            int num = (int) (Math.random() * (end - start)) + start;
+            boolean flag = true;
+            for (int j = 0; j < count; j++) {
+                if (num == result[j]) {
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag) {
+                result[c] = num;
+                c++;
+            }
+        }
+        Arrays.sort(result);
         return result;
     }
 }
