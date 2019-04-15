@@ -9,6 +9,9 @@ build.command=mvn -U clean package -Dmaven.test.skip=true -Ptest
 # 构建打包使用的打包文件
 build.output=target/test-design-0.0.1-SNAPSHOT.jar
 
-# 应用部署脚本
-deploy.appctl.path=deploy.sh
+# Docker镜像构建之后push的仓库地址
+docker.file=Dockerfile_${PACKAGE_LABEL}
+docker.repo=registry.cn-beijing.aliyuncs.com/cfpamf_${PACKAGE_LABEL}/test-design
 
+docker.tag=${TIMESTAMP}
+build.tools.docker.args=--build-arg ENV_MY_JAR=${ENV_MY_JAR}
