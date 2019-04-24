@@ -1,13 +1,7 @@
 package com.cfpamf.test.design.controller;
 
-import com.cfpamf.test.design.dto.req.NewRtReqDto;
-import com.cfpamf.test.design.dto.req.OatReqDto;
-import com.cfpamf.test.design.dto.req.PictReqDto;
-import com.cfpamf.test.design.dto.req.RtReqDto;
-import com.cfpamf.test.design.dto.resp.NewRtRespDto;
-import com.cfpamf.test.design.dto.resp.OatRespDto;
-import com.cfpamf.test.design.dto.resp.PictRespDto;
-import com.cfpamf.test.design.dto.resp.RtRespDto;
+import com.cfpamf.test.design.dto.req.*;
+import com.cfpamf.test.design.dto.resp.*;
 import com.cfpamf.test.design.service.IGetCaseService;
 import com.cfpamf.test.design.util.PhaseUtil;
 import com.cfpamf.test.design.vo.rt.RtCaseItem;
@@ -39,6 +33,9 @@ public class DesignController {
 
     @Autowired
     private IGetCaseService<PictReqDto, PictRespDto> pictService;
+
+    @Autowired
+    private IGetCaseService<CtReqDto, CtRespDto> ctService;
 
     @ApiOperation(value = "获取TVG正交试验用例", notes = "通过正交试验工具TVG获取成对测试的用例", hidden = true)
     @PostMapping(value = "/getTVGCases")
@@ -82,5 +79,11 @@ public class DesignController {
     @PostMapping(value = "/getPICTCases")
     public PictRespDto getPICTCase(@RequestBody PictReqDto input) {
         return pictService.getTestCase(input);
+    }
+
+    @ApiOperation(value = "获取组合测试用例", notes = "通过组合测试工具获取测试用例")
+    @PostMapping(value = "/getCTCases")
+    public CtRespDto getCTCase(@RequestBody CtReqDto input) {
+        return ctService.getTestCase(input);
     }
 }
